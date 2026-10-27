@@ -74,9 +74,9 @@ public class Main {
                 String capText = DefaultKaptcha.createText();
                 String capStr = capText.substring(0, capText.lastIndexOf("@"));
                 BufferedImage bi = DefaultKaptcha.createImage(capStr);
-                // 不替换原始字符。label 文件系统安全时用 label_hash.jpg，否则仅用 hash.jpg
+                // 不替换原始字符。文件名统一使用随机 hash，label 仅记录在 labels.txt
                 String digest = DigestUtils.md5Hex("" + System.nanoTime() + "-" + i);
-                String fileName = isSafeFilename(capStr) ? capStr + "_" + digest + ".jpg" : digest + ".jpg";
+                String fileName = digest + ".jpg";
                 String fullName = imagesDir.getPath()+File.separator+fileName;
                 try {
                     ImageIO.write(bi, "jpg", new File(fullName));
@@ -91,10 +91,5 @@ public class Main {
             e.printStackTrace();
         }
         System.out.println("样本生成完毕，请查看目录"+path);
-    }
-
-    private static boolean isSafeFilename(String label) {
-        return label != null && label.length() > 0 && label.length() < 200
-                && !label.contains("/") && !label.contains("\\") && !label.contains("\0");
     }
 }
